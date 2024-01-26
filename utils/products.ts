@@ -99,7 +99,7 @@ export const products = [
           id: "6499b4887402b0efd394d8f3",
           userId: "6499b184b0e9a8c8709821d3",
           productId: "648437b38c44d52b9542e340",
-          rating: 4,
+          rating: 3,
           comment:
             "good enough. I like the camera and casing. the delivery was fast too.",
           createdDate: "2023-06-26T15:53:44.483Z",
