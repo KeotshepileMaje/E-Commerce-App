@@ -1,6 +1,9 @@
 'use client'
 
+import ProductImage from "@/app/components/ProductImage";
+import Button from "@/app/components/button";
 import SetColor from "@/app/components/product/SetColor";
+import SetQuatity from "@/app/components/product/SetQuatity";
 import { Rating } from "@mui/material";
 import { useCallback, useState } from "react";
 
@@ -52,15 +55,34 @@ const ProductDetails: React.FC<ProductDatailsProps> = ({product}) => {
         })
     }, [cartProduct.selectedImg])
 
+    const handleQtyIncrease = useCallback(()=>{
+        if (cartProduct.quantity === 99) {
+            return
+        }
+        setCartProduct((prev) => {
+            return {...prev, quantity: ++prev.quantity}
+        })
+    },[cartProduct])
+    const handleQtyDecrease = useCallback(()=>{
+        if (cartProduct.quantity === 0) {
+            return
+        }
+        setCartProduct((prev) => {
+            return {...prev, quantity: --prev.quantity}
+        })
+    },[cartProduct])
+
     return ( 
         <div className="
         grid grid-cols-1
         md:grid-cols-2
         gap-12
         ">
-            <div>
-                Images
-            </div>
+            <ProductImage
+                cartProduct={cartProduct}
+                product={product}
+                handleColorSelect={handleColorSelect}
+            />
             <div className="flex flex-col gap-1 text-slate-500">
                 <h2 className="text-3xl font-medium text-slate-700">{product.name}</h2>
                 <div className="flex items-center gap-2">
@@ -85,6 +107,19 @@ const ProductDetails: React.FC<ProductDatailsProps> = ({product}) => {
                     images={product.images}
                     handleColorSelect={handleColorSelect}
                 />
+                <Horizontal />
+                <SetQuatity 
+                    cartProduct={cartProduct}
+                    handleQtyIncrease={handleQtyIncrease}
+                    handleQtyDecrease={handleQtyDecrease}
+                />
+                <Horizontal />
+                <div className="max-w-[300px]">
+                    <Button
+                    label='Add To Cart'
+                    onClick={() => {}}
+                    />
+                </div>
             </div>
         </div>
     );
