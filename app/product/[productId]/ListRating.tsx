@@ -25,7 +25,7 @@ const ListRating: React.FC<ListRatingProps> = ({
                     product.reviews.map((review: any) => {
                         return (
                             <div key={review.id} className="
-                            max-w-300px
+                            max-w-[300px]
                             ">
                                 <div className="
                                 flex gap-2
