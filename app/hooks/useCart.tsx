@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 type CartContextType = {
     cartTotalQty: number;
+    cartTotalAmount: number;
     cartProducts: CartProductType[] | null;
     handleAddProductoCart: (product: CartProductType) => void;
     handleRemoveProductFromCart: (product: CartProductType) => void;
@@ -21,6 +22,7 @@ interface Props {
 export const CartContextProvider = (props: Props) => {
     const [cartTotalQty, setCartTotalQty] = useState(0);
     const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(null);
+    const [cartTotalAmount, setCartTotalAmount] = useState(0)
 
     useEffect(() => {
         const cartItems:any = localStorage.getItem('eshopCartItems');
@@ -28,6 +30,31 @@ export const CartContextProvider = (props: Props) => {
 
         setCartProducts(locallySavedProducts);
     },[]);
+
+    useEffect(() => {
+        const getTotal = () => {
+
+            if (cartProducts) {
+                const  {total, qty} = cartProducts?.reduce(
+                    (acc, item) => {
+                        const itemTotal = item.price * item.quantity
+                        acc.total += itemTotal
+                        acc.qty += item.quantity
+                        return acc
+                    },
+                    {
+                        total: 0,
+                        qty: 0
+                    }
+                )
+                setCartTotalAmount(total)
+                setCartTotalQty(qty)
+            }
+        }
+        
+
+        getTotal();
+    },[cartProducts]);
 
     const handleAddProductoCart = useCallback((product: CartProductType) => {
         setCartProducts((prev) => {
@@ -70,7 +97,7 @@ export const CartContextProvider = (props: Props) => {
             let updatedCart;
 
             if (product.quantity === 99) {
-                return toast.error('Opps! Minimum reached')
+                return toast.error('Opps! Maximum reached')
             }
             if (cartProducts) {
                 updatedCart = [...cartProducts]
@@ -97,8 +124,8 @@ export const CartContextProvider = (props: Props) => {
         (product: CartProductType) => {
             let updatedCart;
 
-            if (product.quantity === 99) {
-                return toast.error('Opps! Maximum reached')
+            if (product.quantity === 0) {
+                return toast.error('Opps! Minimum reached')
             }
             if (cartProducts) {
                 updatedCart = [...cartProducts]
@@ -134,11 +161,12 @@ export const CartContextProvider = (props: Props) => {
     const value = {
         cartTotalQty,
         cartProducts,
+        cartTotalAmount,
         handleAddProductoCart,
         handleRemoveProductFromCart,
         handleCartQtyIncrease,
         handleCartQtyDecrease,
-        handleClearCart
+        handleClearCart,
     }
 
     return ( 

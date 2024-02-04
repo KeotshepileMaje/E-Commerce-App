@@ -68,11 +68,7 @@ const ProductDetails: React.FC<ProductDatailsProps> = ({product}) => {
          }
     },[cartProducts])
 
-
-
-
     const productRating = product.reviews.reduce((acc: number, item: any) => item.rating + acc, 0) /product.reviews.length
-    console.log(cartProduct.selectedImg)
 
     const handleColorSelect = useCallback((value: SelectedImgType) => {
         setCartProduct((prev) => {
