@@ -1,11 +1,11 @@
-import NextAuth from "next-auth"
+import NextAuth, { AuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import prisma from '@/libs/prismadb'
 import bcrypt from 'bcrypt'
 
-export default NextAuth({
+export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -25,31 +25,31 @@ export default NextAuth({
         }
       },
       async authorize(credentials) {
-          if (!credentials?.email || !credentials.password) {
-            throw new Error('Invalid email or password')
+        if (!credentials?.email || !credentials.password) {
+          throw new Error('Invalid email')
+        }
+        console.log(credentials)
+
+        const user = await prisma.user.findUnique({
+          where: {
+              email: credentials.email
           }
-          console.log(credentials)
+        })
+        console.log('User....', user)
 
-          const user = await prisma.user.findUnique({
-            where: {
-                email: credentials.email
-            }
-          })
-          console.log('User....', user)
+        if (!user || !user?.hashedPassword) {
+          throw new Error('Invalid email or password')
+        }
 
-          if (!user || !user?.hashedPassword) {
-            throw new Error('Invalid email or password')
-          }
+        const isCorrectPassword = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword
+        )
 
-          const isCorrectPassword = await bcrypt.compare(
-            credentials.password,
-            user.hashedPassword
-          )
-
-          if (!isCorrectPassword) {
-            throw new Error('Invalid email or password')
-          }
-          return user
+        if (!isCorrectPassword) {
+          throw new Error('Invalid password')
+        }
+        return user
       },
     })
   ],
@@ -61,4 +61,6 @@ export default NextAuth({
     strategy: 'jwt'
   },
   secret: process.env.NEXTAUTH_SECRET
-})
+}
+
+export default NextAuth(authOptions)
