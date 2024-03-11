@@ -1,8 +1,13 @@
 import Container from "../components/Container";
-import CheckOutClient from "./CheckpoutClient";
+import FormWrap from "../components/FormWrap";
+import CheckOutClient from "./CheckoutClient";
 
 const ChckOut = () => {
-  return <Container><CheckOutClient /></Container>;
+  return <Container>
+    <FormWrap>
+      <CheckOutClient />
+    </FormWrap>  
+  </Container>;
 };
 
 export default ChckOut;
