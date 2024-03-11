@@ -25,10 +25,10 @@ export async function getCurrentUser() {
             return null
         }
         return {
-            ...currentUser,
-            createdAt: currentUser.createAt.toISOString(),
-            updatedAt: currentUser.updateAt.toISOString(),
-            emailVerified: currentUser.emailVerified?.toString() || null,
+          ...currentUser,
+          createdAt: currentUser.createdAt.toISOString(),
+          updatedAt: currentUser.updatedAt.toISOString(),
+          emailVerified: currentUser.currentUser?.toString() || null,
         };
     } catch (error: any) {
         return null
