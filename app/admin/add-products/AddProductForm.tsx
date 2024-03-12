@@ -10,6 +10,9 @@ import { categories } from "@/utils/category";
 import { colors } from "@/utils/colors";
 import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
+import firebaseapp from "@/libs/firebase";
 
 export type ImageType = {
     color: string;
@@ -93,7 +96,87 @@ const AddProductForm = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('Product Data', data);
     // upload images to firebse
-    // 
+    // save product to mongodb
+
+    setIsLoading(true); 
+    let uploadedImages: UploadedImageType[] = [];
+
+    if (!data.category) {
+      setIsLoading(false)
+      return toast.error('Category is not selected')
+    };
+    if (!data.images || data.images.length === 0) {
+      setIsLoading(false)
+      return toast.error('No image is selected')
+    };
+
+    const handleImageUploads = async () => {
+      toast('Creating product, please wait...')
+      try {
+        for (const item of data.images) {
+          if (item.image) {
+            const fileName = new Date().getTime() + '-' + item.image.name
+            const storage = getStorage(firebaseapp)
+            const storageRef = ref(storage, `products/${fileName}`)
+            const uploadTask = uploadBytesResumable(storageRef,  item.image)
+
+
+            await new Promise<void>((resolve, reject) =>{
+              uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                  // Observe state change events such as progress, pause, and resume
+                  // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                  const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  console.log("Upload is " + progress + "% done");
+                  switch (snapshot.state) {
+                    case "paused":
+                      console.log("Upload is paused");
+                      break;
+                    case "running":
+                      console.log("Upload is running");
+                      break;
+                  }
+                },
+                (error) => {
+                  // Handle unsuccessful uploads
+                  console.log('Error uploading image', error)
+                  reject(error)
+                },
+                () => {
+                  // Handle successful uploads on complete
+                  // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                  getDownloadURL(uploadTask.snapshot.ref).then(
+                    (downloadURL) => {
+                      uploadedImages.push({
+                        ...item,
+                        image: downloadURL
+                      })
+                      console.log("File available at", downloadURL);
+                      resolve()
+                    }
+                  ).catch(
+                    (error) => {
+                    console.log('Error getting the download URL', error)
+                  })
+                }
+              );
+            })
+
+          }
+        }
+      } catch (error) {
+        setIsLoading(false)
+        console.error('Error handling image uploads', error)
+        return toast.error('Error handling image uploads')
+      }
+    };
+
+    await handleImageUploads();
+    const productData = {...data,}
+
+
   }
 
   return (
@@ -190,7 +273,7 @@ const AddProductForm = () => {
 
       <Button 
         label={isLoading ? 'Loading' : 'Add Product'}
-        onClick={handleSubmit(onsubmit)}
+        onClick={handleSubmit(onSubmit)}
       />
     </>
   );
