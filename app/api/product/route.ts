@@ -3,23 +3,25 @@ import prisma from "@/libs/prismadb";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-    const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser();
 
-    if (!currentUser || currentUser.role === 'ADMIN') {
-        return NextResponse.error()
-    }
+  if (!currentUser || currentUser.role !== 'ADMIN') {
+    return NextResponse.error()     
+  }
+  
   const body = await request.json();
-  const { name, description, price, brand, category, inStock, images } = body;
+  const { name, description, price, brand, category, inStock, image } = body;
 
+  console.log('/+++++++++++/',body)
   const user = await prisma.product.create({
     data: {
       name,
       description,
-      price,
+      price: parseFloat(price),
       brand,
       category,
       inStock,
-      images,
+      images: image,
     },
   });
 

@@ -13,6 +13,8 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import firebaseapp from "@/libs/firebase";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export type ImageType = {
     color: string;
@@ -31,8 +33,7 @@ const AddProductForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [images, setImages] = useState<ImageType[] | null> ();
   const [isProductCreated, setIsProductCreated] = useState(false);
-
-  console.log('images: ', images)
+  const router = useRouter()
 
   const {
     register,
@@ -148,7 +149,7 @@ const AddProductForm = () => {
                   // Handle successful uploads on complete
                   // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                   getDownloadURL(uploadTask.snapshot.ref).then(
-                    (downloadURL) => {
+                    (downloadURL) => {  
                       uploadedImages.push({
                         ...item,
                         image: downloadURL
@@ -174,9 +175,23 @@ const AddProductForm = () => {
     };
 
     await handleImageUploads();
-    const productData = {...data,}
+    const productData = {...data, image:uploadedImages}
 
+    console.log('productData', productData)
 
+    
+    axios.post('/api/product', productData)
+      .then(()=>{
+        toast.success("Product created");
+        setIsProductCreated(true);
+        router.refresh();
+      })
+      .catch((error) => {
+        toast.error('Something went wrong when saving the product')
+      })
+      .finally(()=> {
+        setIsLoading(false)
+      })
   }
 
   return (
