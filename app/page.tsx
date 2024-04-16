@@ -3,9 +3,14 @@ import Container from "./components/Container";
 import HomeBanner from "./components/HomeBanner";
 import { products } from "@/utils/products"
 import ProductCard from "./components/product/ProductCard";
-
+import NullData from "./components/NullData";
 
 export default function Home() {
+
+  if (products.length === 0) {
+    return <NullData title='Oops! No products found'/>
+  }
+
   return (
     <div className="p-8">
       <Container>
@@ -23,6 +28,7 @@ export default function Home() {
             (product: any) => {
               return <ProductCard
                 data={product}
+                key={product.id}
               />
             }
           )}
