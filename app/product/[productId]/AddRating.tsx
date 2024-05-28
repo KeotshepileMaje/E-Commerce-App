@@ -22,7 +22,7 @@ interface AddRatingProps {
 }
 
 const AddRating: React.FC<AddRatingProps> = ({ product, user }) => {
-  if (!user || !product) return null;
+  
 
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter()
@@ -76,6 +76,8 @@ const AddRating: React.FC<AddRatingProps> = ({ product, user }) => {
         setIsLoading(false)
       })
   };
+  
+  if (!user || !product) return null;
 
   const deliveredOrder = user?.orders.some((order) =>
     order.products.find(
