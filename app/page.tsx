@@ -1,9 +1,9 @@
 export const revalidate = 0;
 
-import Container from "./components/Container";
-import HomeBanner from "./components/HomeBanner";
-import ProductCard from "./components/product/ProductCard";
-import NullData from "./components/NullData";
+import Container from "../components/Container";
+import HomeBanner from "../components/HomeBanner";
+import ProductCard from "../components/product/ProductCard";
+import NullData from "../components/NullData";
 import getProducts, { IProductParams } from "@/actions/getProducts";
 
 interface HomeProps {
@@ -11,7 +11,6 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = async ({ searchParams }) => {
-
   const products = await getProducts(searchParams || null);
 
   if (products.length === 0) {
@@ -44,4 +43,4 @@ const Home: React.FC<HomeProps> = async ({ searchParams }) => {
   );
 };
 
-export default Home
+export default Home;

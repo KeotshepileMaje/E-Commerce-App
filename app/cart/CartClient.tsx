@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useCart } from "../hooks/useCart";
 import { MdArrowBack } from "react-icons/md";
-import Heading from "../components/Heading";
-import Button from "../components/Button";
+import Heading from "../../components/Heading";
+import Button from "../../components/Button";
 import ItemContent from "./ItemContent";
 import { formatPrice } from "@/utils/formatPrice";
 import { SafeUser } from "@/types";
@@ -120,7 +120,9 @@ const CartClient: React.FC<CartClientProps> = ({ currentUser }) => {
           <Button
             label={currentUser ? "CheckOut" : "Login to CheckOut"}
             outline={currentUser ? false : true}
-            onClick={() => {currentUser ? router.push('/checkout') : router.push('/login')}}
+            onClick={() => {
+              currentUser ? router.push("/checkout") : router.push("/login");
+            }}
           />
           <Link
             href={"/"}

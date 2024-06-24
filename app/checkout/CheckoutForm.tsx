@@ -10,8 +10,8 @@ import { useEffect, useState } from "react";
 import { useCart } from "../hooks/useCart";
 import { formatPrice } from "@/utils/formatPrice";
 import toast from "react-hot-toast";
-import Heading from "../components/Heading";
-import Button from "../components/Button";
+import Heading from "../../components/Heading";
+import Button from "../../components/Button";
 
 interface CheckoutFormProps {
   clientSecret: string;
@@ -100,7 +100,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
         Total: {formattedPrice}
       </div>
       <Button
-        label={isLoading ? 'Processing' : 'Pay now'}
+        label={isLoading ? "Processing" : "Pay now"}
         disabled={isLoading || !stripe || !elements}
         onClick={() => {}}
       />

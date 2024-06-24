@@ -1,8 +1,8 @@
 "use client";
 
-import Button from "@/app/components/Button";
-import Heading from "@/app/components/Heading";
-import Input from "@/app/components/inputs/input";
+import Button from "@/components/Button";
+import Heading from "@/components/Heading";
+import Input from "@/components/inputs/input";
 import { SafeUser } from "@/types";
 import { Rating } from "@mui/material";
 import { Order, Product, Review } from "@prisma/client";
@@ -16,16 +16,16 @@ interface AddRatingProps {
   product: Product & {
     reviews: Review[];
   };
-  user: SafeUser & {
-    orders: Order[];
-  } | null;
+  user:
+    | (SafeUser & {
+        orders: Order[];
+      })
+    | null;
 }
 
 const AddRating: React.FC<AddRatingProps> = ({ product, user }) => {
-  
-
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -53,30 +53,31 @@ const AddRating: React.FC<AddRatingProps> = ({ product, user }) => {
     setIsLoading(true);
 
     if (data.rating === 0) {
-      setIsLoading(false)
+      setIsLoading(false);
       return toast.error("No rating selected");
-    };
+    }
 
     const ratingData = {
       ...data,
       userId: user?.id,
-      product: product
+      product: product,
     };
 
-    axios.post('/api/rating', ratingData)
-      .then(()=>{
-        toast.success('Rate submitted')
-        router.refresh()
-        reset()
+    axios
+      .post("/api/rating", ratingData)
+      .then(() => {
+        toast.success("Rate submitted");
+        router.refresh();
+        reset();
       })
       .catch((error) => {
-        toast.error('Something went wrong......')
+        toast.error("Something went wrong......");
       })
       .finally(() => {
-        setIsLoading(false)
-      })
+        setIsLoading(false);
+      });
   };
-  
+
   if (!user || !product) return null;
 
   const deliveredOrder = user?.orders.some((order) =>

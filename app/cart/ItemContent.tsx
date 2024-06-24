@@ -1,30 +1,27 @@
-'use client'
+"use client";
 
 import { formatPrice } from "@/utils/formatPrice";
 import { CartProductType } from "../product/[productId]/ProductDetails";
 import Link from "next/link";
 import Image from "next/image";
 import { truncateText } from "@/utils/truncate";
-import SetQuatity from "../components/product/SetQuatity";
+import SetQuatity from "../../components/product/SetQuatity";
 import { useCart } from "../hooks/useCart";
 
-interface ItemContentProps{
-    item: CartProductType;
+interface ItemContentProps {
+  item: CartProductType;
 }
 
-const ItemContent: React.FC<ItemContentProps> = ({
-    item
-}) => {
+const ItemContent: React.FC<ItemContentProps> = ({ item }) => {
+  const {
+    handleRemoveProductFromCart,
+    handleCartQtyIncrease,
+    handleCartQtyDecrease,
+  } = useCart();
 
-    const { 
-        handleRemoveProductFromCart,
-        handleCartQtyIncrease,
-        handleCartQtyDecrease
-    } = useCart()
-
-
-    return ( 
-        <div className="
+  return (
+    <div
+      className="
         grid 
         grid-cols-5
         text-xs
@@ -33,50 +30,60 @@ const ItemContent: React.FC<ItemContentProps> = ({
         border-t-[1.5px]
         py-4
         items-center
-        ">
-            <div className="
+        "
+    >
+      <div
+        className="
             col-span-2
             justify-self-start
             flex
             gap-2
             md:gap-4
-            ">
-                <Link href={`/product/${item.id}`}>
-                    <div className="relative w-[70px] aspect-square">
-                        <Image 
-                            src={item.selectedImg.image}
-                            alt={item.name}
-                            fill
-                            className="object-contain"
-                        />
-                    </div>
-                </Link>
-                <div className="flex flex-col justify-between">
-                    <Link href={`/product/${item.id}`}>{truncateText(item.name)}</Link>
-                    <div>{item.selectedImg.color}</div>
-                    <div>
-                        <button className="text-slate-500 underline" onClick={() => {handleRemoveProductFromCart(item)}}>
-                            Remove
-                        </button>
-                    </div>
-                </div> 
-            </div>
-            <div className="justify-self-center">
-                {formatPrice(item.price)}
-            </div>
-            <div className="justify-self-center">
-                <SetQuatity 
-                    cartCounter={true}
-                    cartProduct={item}
-                    handleQtyIncrease={() => {handleCartQtyIncrease(item)}}
-                    handleQtyDecrease={() => {handleCartQtyDecrease(item)}}
-                />
-            </div>
-            <div className="justify-self-end">
-                {formatPrice(item.price * item.quantity)}
-            </div>
+            "
+      >
+        <Link href={`/product/${item.id}`}>
+          <div className="relative w-[70px] aspect-square">
+            <Image
+              src={item.selectedImg.image}
+              alt={item.name}
+              fill
+              className="object-contain"
+            />
+          </div>
+        </Link>
+        <div className="flex flex-col justify-between">
+          <Link href={`/product/${item.id}`}>{truncateText(item.name)}</Link>
+          <div>{item.selectedImg.color}</div>
+          <div>
+            <button
+              className="text-slate-500 underline"
+              onClick={() => {
+                handleRemoveProductFromCart(item);
+              }}
+            >
+              Remove
+            </button>
+          </div>
         </div>
-    );
-}
+      </div>
+      <div className="justify-self-center">{formatPrice(item.price)}</div>
+      <div className="justify-self-center">
+        <SetQuatity
+          cartCounter={true}
+          cartProduct={item}
+          handleQtyIncrease={() => {
+            handleCartQtyIncrease(item);
+          }}
+          handleQtyDecrease={() => {
+            handleCartQtyDecrease(item);
+          }}
+        />
+      </div>
+      <div className="justify-self-end">
+        {formatPrice(item.price * item.quantity)}
+      </div>
+    </div>
+  );
+};
 
 export default ItemContent;

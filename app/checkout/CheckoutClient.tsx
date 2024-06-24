@@ -7,16 +7,18 @@ import toast from "react-hot-toast";
 import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
-import Button from "../components/Button";
+import Button from "../../components/Button";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
+);
 
 const CheckOutClient = () => {
   const { cartProducts, paymentIntent, handleSetPaymentIntent } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
-  const [paymentSucess, setPaymentSucess] = useState(false)
+  const [paymentSucess, setPaymentSucess] = useState(false);
 
   const router = useRouter();
   console.log("Payment Intent: ", paymentIntent);
@@ -59,43 +61,39 @@ const CheckOutClient = () => {
     clientSecret,
     appearance: {
       theme: "stripe",
-      labels: 'floating'
-    }
-  }
+      labels: "floating",
+    },
+  };
 
-  const handleSetPaymentSuccess = useCallback((val: boolean ) => {
-    setPaymentSucess(val)
-  }, [])
+  const handleSetPaymentSuccess = useCallback((val: boolean) => {
+    setPaymentSucess(val);
+  }, []);
 
   return (
     <div className="w-full">
       {clientSecret && cartProducts && (
         <Elements options={options} stripe={stripePromise}>
-          <CheckoutForm 
-            clientSecret={clientSecret} 
+          <CheckoutForm
+            clientSecret={clientSecret}
             handleSetPaymentSuccess={handleSetPaymentSuccess}
           />
         </Elements>
       )}
-      {
-        loading && <div className="text-center">Loading Checkout...</div>
-      }
-      {
-        error && <div className="text-center text-rose-500">Something went wrong</div>
-      }
-      {
-        paymentSucess && (
+      {loading && <div className="text-center">Loading Checkout...</div>}
+      {error && (
+        <div className="text-center text-rose-500">Something went wrong</div>
+      )}
+      {paymentSucess && (
+        <div>
+          <div>Payment Success</div>
           <div>
-            <div>Payment Success</div>
-            <div>
-              <Button
-                label='View your orders'
-                onClick={() => router.push('/order')}
-              />
-            </div>
+            <Button
+              label="View your orders"
+              onClick={() => router.push("/order")}
+            />
           </div>
-        )
-      }
+        </div>
+      )}
     </div>
   );
 };
