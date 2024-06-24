@@ -3,6 +3,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+    experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
   images: {
     domains: [
       "m.media-amazon.com",
