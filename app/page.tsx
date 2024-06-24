@@ -1,24 +1,22 @@
-import { truncateText } from "@/utils/truncate";
+export const revalidate = 0;
+
 import Container from "./components/Container";
 import HomeBanner from "./components/HomeBanner";
 import ProductCard from "./components/product/ProductCard";
 import NullData from "./components/NullData";
 import getProducts, { IProductParams } from "@/actions/getProducts";
 
-
 interface HomeProps {
   searchParams: IProductParams;
 }
 
-
 const Home: React.FC<HomeProps> = async ({ searchParams }) => {
-  const products = await getProducts(searchParams);
+
+  const products = await getProducts(searchParams || null);
 
   if (products.length === 0) {
     return <NullData title="Oops! No products found" />;
   }
-
-  
 
   return (
     <div className="p-8">
