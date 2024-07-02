@@ -11,7 +11,7 @@ export const categories = [
     icon: AiFillPhone,
   },
   {
-    label: "laptop",
+    label: "Laptops",
     icon: AiOutlineLaptop,
   },
   {
@@ -19,7 +19,7 @@ export const categories = [
     icon: AiOutlineDesktop,
   },
   {
-    label: "Tv",
+    label: "Furniture",
     icon: MdTv,
   },
   {
