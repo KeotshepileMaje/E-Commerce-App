@@ -3,7 +3,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-    experimental: {
+  experimental: {
     missingSuspenseWithCSRBailout: false,
   },
   images: {
@@ -11,6 +11,7 @@ const nextConfig = {
       "m.media-amazon.com",
       "lh3.googleusercontent.com",
       "firebasestorage.googleapis.com",
+      "cdn.dummyjson.com",
     ],
   },
 };
